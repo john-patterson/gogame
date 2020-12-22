@@ -1,26 +1,51 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { connect, sendMsg } from './Socket';
+import { Header } from './Components'
+import { ChatHistory, IChatRepository } from './Components/ChatHistory';
+import { ChatInput } from './Components/ChatInput';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component<{}, IChatRepository> {
+    state: IChatRepository  = {
+        messages: []
+    }
+
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            messages: []
+        };
+    }
+
+    componentDidMount() {
+        connect((msg) => {
+            this.setState(prevState => {
+                return {
+                    messages: [...prevState.messages, msg]
+                };
+            });
+        });
+
+    }
+
+    send(event: any) {
+        if (event.key === "Enter") {
+            sendMsg(event.target.value);
+            event.target.value = "";
+        }
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <Header />
+                <ChatHistory messages={this.state.messages} /> 
+                <ChatInput send={this.send} />
+            </div>
+        );
+    }
+
 }
+
 
 export default App;
