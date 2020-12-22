@@ -1,7 +1,7 @@
 FROM golang:1.15
-RUN mkdir /app
-ADD . /app/
-WORKDIR /app
-RUN go mod download
-RUN go build -o main ./...
-CMD ["/app/main"]
+
+WORKDIR /go/app
+COPY . /go/app
+RUN GO111MODULE=on go build -o /go/app/main /go/app/main.go
+
+CMD ["/go/app/main"]
