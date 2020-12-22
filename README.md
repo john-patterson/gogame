@@ -1,0 +1,2 @@
+# gogame
+Online Go game.
